@@ -5,7 +5,10 @@
 
 import axios from 'axios'
 
-export default function ajax (url, type = 'GET', data = {}) {
+const HEADER = 'Authorization'
+const TOKEN_HEAD = 'Bearer '
+
+export default function ajax (url, type = 'GET', data = {}, token = '') {
   return new Promise((resolve, reject) => {
     // 执行异步请求
     let promise = {}
@@ -21,17 +24,28 @@ export default function ajax (url, type = 'GET', data = {}) {
         url = url + '?' + dataStr
       }
       // 发送get请求
-      promise = axios.get(url)
+      if (token === '') {
+        promise = axios.get(url)
+      } else {
+        promise = axios.get(url, { [HEADER]: TOKEN_HEAD + token })
+      }
     } else {
       // 发送post请求
-      promise = axios.get(url)
+      if (token === '') {
+        promise = axios.post(url, data)
+      } else {
+        promise = axios.post(url, { [HEADER]: TOKEN_HEAD + token })
+      }
     }
     promise.then((response) => {
       // 成功时调用
       resolve(response.data)
     }).catch((error) => {
       // 失败时调用
+      // resolve(error.response.data)
       reject(error)
     })
   })
 }
+
+

@@ -10,7 +10,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.6.1",
+    "js-cookie": "^2.2.0",
+    "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.11.0",
+    "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
+    "path-to-regexp": "^3.0.0",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.6",
     "vue-canvas-nest": "^2.0.0",
@@ -35,7 +40,12 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "indent": [
+        2,
+        2
+      ]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

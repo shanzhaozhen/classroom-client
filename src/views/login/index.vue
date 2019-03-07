@@ -1,5 +1,5 @@
 <template>
-  <div class="login-body">
+  <div class="login-body" v-loading="loading">
     <vueCanvasNest :config="config"/>
     <el-form class="login-container" ref="loginForm" :rules="rules" :model="loginForm">
       <h3 class="title">用户登陆</h3>
@@ -21,6 +21,12 @@
 <script>
 import vueCanvasNest from 'vue-canvas-nest'
 
+import store from '@/store'
+
+import { login } from '@/api/index'
+
+import { setToken } from '@/utils/auth'
+
 export default {
   name: 'Login',
   components: { vueCanvasNest },
@@ -32,6 +38,7 @@ export default {
         opacity: 0.9,
         zIndex: -1
       },
+      loading: false,
       loginForm: {
         username: '',
         password: '',
@@ -49,13 +56,56 @@ export default {
     }
   },
   methods: {
-    signIn () {},
     submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          alert('submit!')
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1*60*1000);
+
+          this.$store.dispatch('Login', this.loginForm).then(() => {
+            this.loading = false
+            this.$message({
+              message: '登陆成功！',
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.$router.push({path: this.redirect || '/'})
+            }, 0)
+          }).catch(() => {
+            this.loading = false
+          })
+          // const result = await login(this.loginForm)
+          //
+          // if (result) {
+          //   this.loading = false;
+          //   if (result.success === true) {
+          //     setToken(result['access-token'])
+          //     this.$store.dispatch('saveToken', result['access-token']);
+          //
+          //     this.$message({
+          //       message: '登陆成功！',
+          //       type: 'success'
+          //     })
+          //
+          //     setTimeout(() => {
+          //       this.$router.push({ path: this.redirect || '/' })
+          //     }, 3000)
+          //
+          //   } else {
+          //     this.$message({
+          //       message: '错误：' + result.status + '，' + result.message,
+          //       type: 'error'
+          //     })
+          //   }
+          // }
+
         } else {
-          console.log('error submit!!')
+          this.$message({
+            message: '你的用户名或者密码输入有误',
+            type: 'warning'
+          })
           return false
         }
       })

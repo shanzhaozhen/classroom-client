@@ -1,5 +1,5 @@
 <template>
-  <div class="login-body">
+  <div class="login-body" v-loading="loading">
     <vueCanvasNest :config="config"/>
     <el-form class="login-container" ref="registerForm" :rules="rules" :model="registerForm">
       <h3 class="title">用户注册</h3>
@@ -23,6 +23,8 @@
 <script>
 import vueCanvasNest from 'vue-canvas-nest'
 
+import {register, checkUsername} from '@/api/index'
+
 export default {
   name: 'Register',
   components: { vueCanvasNest },
@@ -34,6 +36,7 @@ export default {
         opacity: 0.9,
         zIndex: -1
       },
+      loading: false,
       registerForm: {
         username: '',
         password: '',
@@ -43,7 +46,8 @@ export default {
       rules: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 5, max: 18, message: '长度在 5 到 18 个字符', trigger: 'blur' }
+          { min: 5, max: 18, message: '长度在 5 到 18 个字符', trigger: 'blur' },
+          { validator: this.checkUsername, trigger: 'blur' }
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
@@ -66,12 +70,62 @@ export default {
         callback()
       }
     },
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
+    async checkUsername (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('用户名不能为空'))
+      } else if (value.length < 5 || value.length > 18) {
+        callback(new Error('长度在 5 到 18 个字符'))
+      } else if (value) {
+        const result = await checkUsername({username: value})
+        if (result.valid === false) {
+          callback(new Error('该用户名已被注册'))
         } else {
-          console.log('error submit!!')
+          callback()
+        }
+      } else {
+        callback()
+      }
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+          }, 5*60*1000);
+
+          const result = await register({
+            username: this.registerForm.username,
+            password: this.registerForm.password
+          })
+
+          if (result) {
+            this.loading = false;
+
+            if (result.success === true) {
+              this.$message({
+                message: '注册成功！将在5s后跳转到登陆页',
+                type: 'success'
+              })
+
+              setTimeout(() => {
+                this.$router.push({ path: '/login' })
+              }, 5000)
+
+            } else {
+              this.$message({
+                message: result.msg,
+                type: 'warning'
+              })
+            }
+          }
+
+        } else {
+          this.$message({
+            message: '你填写的数据有误！',
+            type: 'warning'
+          });
           return false
         }
       })
