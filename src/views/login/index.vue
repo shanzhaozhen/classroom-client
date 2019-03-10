@@ -23,7 +23,7 @@ import vueCanvasNest from 'vue-canvas-nest'
 
 import store from '@/store'
 
-import { login } from '@/api/index'
+import { login } from '@/api/index.js'
 
 import { setToken } from '@/utils/auth'
 

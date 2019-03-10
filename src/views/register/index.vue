@@ -23,7 +23,7 @@
 <script>
 import vueCanvasNest from 'vue-canvas-nest'
 
-import {register, checkUsername} from '@/api/index'
+import {register, checkUsername} from '@/api/index.js'
 
 export default {
   name: 'Register',

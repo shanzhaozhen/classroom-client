@@ -302,7 +302,7 @@ export default {
           updateArticle(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
+                const index.js = this.list.indexOf(v)
                 this.list.splice(index, 1, this.temp)
                 break
               }
@@ -325,7 +325,7 @@ export default {
         type: 'success',
         duration: 2000
       })
-      const index = this.list.indexOf(row)
+      const index.js = this.list.indexOf(row)
       this.list.splice(index, 1)
     },
     handleFetchPv(pv) {

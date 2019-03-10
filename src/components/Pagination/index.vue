@@ -25,7 +25,7 @@ export default {
     },
     page: {
       type: Number,
-      default: 1
+      default: 0
     },
     limit: {
       type: Number,
@@ -57,10 +57,10 @@ export default {
   computed: {
     currentPage: {
       get() {
-        return this.page
+        return this.page + 1
       },
       set(val) {
-        this.$emit('update:page', val)
+        this.$emit('update:page', val - 1)
       }
     },
     pageSize: {

@@ -47,6 +47,33 @@ export const constantRouterMap = [
         name: 'ClassRoom',
         component: () => import('@/views/classroom/index'),
         meta: { title: '课堂管理', icon: 'cm-icon-solution' }
+      },
+      {
+        path: ':id(\\d+)',
+        name: 'Student',
+        component: () => import('@/views/student/index'),
+        meta: { title: '学生管理', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/signin',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'SignInTask',
+        component: () => import('@/views/signintask/index'),
+        meta: { title: '考勤管理', icon: 'cm-icon-solution' }
+      },
+      {
+        path: ':id(\\d+)',
+        name: 'SignIn',
+        component: () => import('@/views/signin/index'),
+        meta: { title: '签到任务', noCache: true },
+        hidden: true
       }
     ]
   },

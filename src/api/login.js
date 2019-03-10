@@ -1,4 +1,3 @@
-// import ajax from './ajax'
 import request from '@/utils/request'
 
 const BASE_URL = '/api'
@@ -8,7 +7,7 @@ const BASE_URL = '/api'
  */
 export function login({ username, password, rememberMe }) {
   return request({
-    url: `${BASE_URL}/login`,
+    url: `/api/login`,
     method: 'post',
     data: {
       username,
@@ -18,19 +17,9 @@ export function login({ username, password, rememberMe }) {
   })
 }
 
-// export function login({username, password, rememberMe}) {
-//   return new Promise((resolve, reject) => {
-//     ajax(`${BASE_URL}/login`, 'POST', {username, password, rememberMe}).then(response => {
-//       resolve(response)
-//     }).catch(error => {
-//       reject(error.response)
-//     })
-//   })
-// }
-
 export function getUserInfo() {
   return request({
-    url: `${BASE_URL}/user/info`,
+    url: `${BASE_URL}/admin/user/info`,
     method: 'get'
   })
 }
