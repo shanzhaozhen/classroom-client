@@ -19,25 +19,23 @@
       fit
       highlight-current-row
       @sort-change="sortChange">
-      <el-table-column label="姓名" align="center" sortable="custom" prop="fullName">
+      <el-table-column label="姓名" align="center" sortable="custom" prop="u.sysUserInfo.fullName">
         <template slot-scope="scope">
             {{ scope.row.fullName }}
         </template>
       </el-table-column>
-      <el-table-column label="昵称" align="center" sortable="custom" prop="nickname">
+      <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickname">
         <template slot-scope="scope">
           <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="加入时间" sortable="custom" prop="createdDate">
+      <el-table-column align="center" label="签到时间" sortable="custom" prop="createdDate">
         <template slot-scope="scope">
-          <i class="el-icon-time"/>
-          <span>{{ scope.row.createdDate }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">移出班级</el-button>
+          <div v-if="scope.row.createdDate !== null">
+            <i class="el-icon-time" />
+            <span>{{ scope.row.createdDate }}</span>
+          </div>
+          <span v-else>未签到</span>
         </template>
       </el-table-column>
     </el-table>
@@ -48,7 +46,7 @@
 </template>
 
 <script>
-import { getStudentData, moveOutOfClass } from '@/api/student'
+import { getSignInData } from '@/api/signin'
 
 import Pagination from '@/components/Pagination'
 
@@ -85,22 +83,7 @@ export default {
         type: undefined,
         sort: ''
       },
-      statusOptions: ['published', 'draft', 'deleted'],
-      temp: {
-        id: undefined,
-        name: '',
-        outline: '',
-        studentNumber: '',
-        classType: 1,
-        announce: true
-      },
-      dialogPvVisible: false,
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '修改',
-        create: '添加'
-      }
+      statusOptions: ['published', 'draft', 'deleted']
     }
   },
   created() {
@@ -109,7 +92,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getStudentData(this.$route.params.id, this.listQuery).then(data => {
+      getSignInData(this.$route.params.id, this.listQuery).then(data => {
         this.list = data.content
         this.total = data.totalElements
         // Just to simulate the time of the request
@@ -128,38 +111,7 @@ export default {
         this.listQuery.sort = `${prop},desc`
       }
       this.getList()
-    },
-    handleDelete(row) {
-      this.$confirm(`此操作将该同学(${row.name})移出本班级, 是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        moveOutOfClass(row.id).then((data) => {
-          this.dialogFormVisible = false
-          this.$notify({
-            title: '成功',
-            message: data.success ? '移出成功' : data.msg,
-            type: data.success ? 'success' : 'error',
-            duration: 2000
-          })
-          this.getList()
-        }).catch(() => {
-          this.$notify({
-            title: '失败',
-            message: '移出失败',
-            type: 'error',
-            duration: 2000
-          })
-        })
-
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消移出'
-        });
-      });
-    },
+    }
   }
 }
 </script>

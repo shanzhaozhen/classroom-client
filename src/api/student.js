@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getStudentData(classId, query) {
   return request({
-    url: `/api/admin/student/${classId}`,
+    url: `/api/admin/students/${classId}`,
     method: 'get',
     params: query
   })

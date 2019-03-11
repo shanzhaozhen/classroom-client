@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">发起考勤</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">发起作业任务</el-button>
       <div style="float: right;">
         <el-select class="filter-item" v-model="listQuery.classId" filterable placeholder="请选择班级" style="margin-right: 10px;">
           <el-option label="所有班级" value=""></el-option>
@@ -25,21 +25,16 @@
       fit
       highlight-current-row
       @sort-change="sortChange">
-      <el-table-column label="签到任务名称" width="250" align="center" sortable="custom" prop="name">
+      <el-table-column label="作业名称" width="250" align="center" sortable="custom" prop="name">
         <template slot-scope="scope">
-          <router-link :to="{path: '/signintask/' + scope.row.id, query:{signInTaskName:scope.row.name}}" class="link-type">
+          <router-link :to="{path: '/homewordktask/' + scope.row.id, query:{homeworkTaskName:scope.row.name}}" class="link-type">
             <span>{{ scope.row.name }}</span>
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="考勤任务名概述" sortable="custom" prop="outline">
+      <el-table-column label="作业概述" sortable="custom" prop="outline">
         <template slot-scope="scope">
           <span>{{ scope.row.outline }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="签到方式" width="110" align="center" sortable="custom" prop="classType">
-        <template slot-scope="scope">
-          <el-tag>{{ scope.row.signInType }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="开始时间" width="180" sortable="custom" prop="createdDate">
@@ -81,10 +76,10 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
         <input v-model="temp.id" type="hidden"/>
-        <el-form-item label="任务名称" prop="name">
+        <el-form-item label="作业名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入签到任务名称"></el-input>
         </el-form-item>
-        <el-form-item label="任务概述">
+        <el-form-item label="作业概述">
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="temp.outline" type="textarea" placeholder="请输入任务概述"></el-input>
         </el-form-item>
         <el-form-item label="选择班级" prop="classId">
@@ -105,27 +100,6 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="签到位置" prop="scope">
-          <el-input v-model="temp.address" placeholder="请选取签到位置" :disabled="true">
-            <el-button slot="append" icon="el-icon-location-outline" @click="handleGetLocation">选择位置</el-button>
-          </el-input>
-          <input v-model="temp.longitude" type="hidden"/>
-          <input v-model="temp.latitude" type="hidden"/>
-        </el-form-item>
-        <el-form-item label="范围（m）" prop="scope">
-          <el-input-number v-model="temp.scope" controls-position="right" :min="0" :max="1000"></el-input-number>
-        </el-form-item>
-        <el-form-item label="签到方式" prop="signInType">
-          <el-select class="filter-item" v-model="temp.signInType" filterable placeholder="请选择签到方式" style="margin-right: 10px;">
-            <el-option label="现场扫码" :value="0"></el-option>
-            <el-option label="在线扫码" :value="1"></el-option>
-            <el-option label="现场人脸识别" :value="2"></el-option>
-            <el-option label="在线人脸识别" :value="3"></el-option>
-            <el-option label="现场混合" :value="4"></el-option>
-            <el-option label="在线混合" :value="5"></el-option>
-            <el-option label="所有混合" :value="6"></el-option>
-          </el-select>
         </el-form-item>
         <el-form-item label="发布状态" prop="announce">
           <el-radio-group v-model="temp.announce">
@@ -155,7 +129,7 @@
 <script>
 import { getClassRoomSimpleData } from '@/api/classroom'
 
-import { getSignInTaskData, createSignInTask, updateSignInTask, deleteSignInTask } from '@/api/signintask'
+import { getHomeworkTaskData, createHomeworkTask, updateHomeworkTask, deleteHomeworkTask } from '@/api/homeworktask'
 
 import Pagination from '@/components/Pagination'
 
@@ -166,7 +140,7 @@ import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 
 export default {
-  name: 'SignInTask',
+  name: 'HomeworkTask',
   components: {
     Pagination,
     MapBox
@@ -210,11 +184,6 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
-        signInType: 0,
-        address: '',
-        longitude: 112.495301,
-        latitude: 23.107272,
-        scope: 0,
         announce: undefined
       },
       tempDate: undefined,
@@ -247,7 +216,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      getSignInTaskData(this.listQuery).then(data => {
+      getHomeworkTaskData(this.listQuery).then(data => {
         this.list = data.content
         this.total = data.totalElements
         // Just to simulate the time of the request
@@ -276,7 +245,7 @@ export default {
         if (valid) {
           this.temp.startDate = parseTime(this.tempDate[0])
           this.temp.endDate =  parseTime(this.tempDate[1])
-          createSignInTask(this.temp).then(() => {
+          createHomeworkTask(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -311,7 +280,7 @@ export default {
         if (valid) {
           this.temp.startDate = parseTime(this.tempDate[0])
           this.temp.endDate =  parseTime(this.tempDate[1])
-          updateSignInTask(this.temp).then(() => {
+          updateHomeworkTask(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -340,18 +309,13 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
-        signInType: 0,
-        address: '',
-        longitude: 112.495301,
-        latitude: 23.107272,
-        scope: 0,
         announce: false
       }
       this.tempDate = []
     },
     handleModifyStatus(row, status) {
       row.announce = status
-      updateSignInTask(row).then(() => {
+      updateHomeworkTask(row).then(() => {
         this.getList()
         this.dialogFormVisible = false
         this.$notify({
@@ -375,7 +339,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteSignInTask(row.id).then((data) => {
+        deleteHomeworkTask(row.id).then((data) => {
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',

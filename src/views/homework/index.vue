@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div style="text-align: center">
-      <span>{{ this.$route.query.className }}</span>
+      <span>{{ this.$route.query.homeworkTaskName }}</span>
     </div>
     <div class="filter-container">
       <el-button v-waves class="filter-item" icon="el-icon-back" @click="$router.back(-1)">返回</el-button>
@@ -29,15 +29,26 @@
           <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="加入时间" sortable="custom" prop="createdDate">
+      <el-table-column align="center" label="提交时间" sortable="custom" prop="createdDate">
         <template slot-scope="scope">
-          <i class="el-icon-time"/>
-          <span>{{ scope.row.createdDate }}</span>
+          <div v-if="scope.row.createdDate !== null">
+            <router-link :to="'/homework/' + scope.row.id" class="link-type">
+              <i class="el-icon-time"/>
+              <span>{{ scope.row.createdDate }}</span>
+            </router-link>
+          </div>
+          <span v-else>未交作业</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="评分" sortable="custom" prop="createdDate">
         <template slot-scope="scope">
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">移出班级</el-button>
+          <span v-if="scope.row.score !== null">{{ scope.row.score }}</span>
+          <span v-else>未评分</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="giveScore(scope.row)">评分</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,14 +59,14 @@
 </template>
 
 <script>
-import { getStudentData, moveOutOfClass } from '@/api/student'
+import { getHomeworkData, giveHomeworkScore } from '@/api/homework'
 
 import Pagination from '@/components/Pagination'
 
 import waves from '@/directive/waves' // Waves directive
 
 export default {
-  name: 'ClassRoom',
+  name: 'Homework',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -85,22 +96,7 @@ export default {
         type: undefined,
         sort: ''
       },
-      statusOptions: ['published', 'draft', 'deleted'],
-      temp: {
-        id: undefined,
-        name: '',
-        outline: '',
-        studentNumber: '',
-        classType: 1,
-        announce: true
-      },
-      dialogPvVisible: false,
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '修改',
-        create: '添加'
-      }
+      statusOptions: ['published', 'draft', 'deleted']
     }
   },
   created() {
@@ -109,7 +105,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getStudentData(this.$route.params.id, this.listQuery).then(data => {
+      getHomeworkData(this.$route.params.id, this.listQuery).then(data => {
         this.list = data.content
         this.total = data.totalElements
         // Just to simulate the time of the request
@@ -129,37 +125,44 @@ export default {
       }
       this.getList()
     },
-    handleDelete(row) {
-      this.$confirm(`此操作将该同学(${row.fullName})移出本班级, 是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        moveOutOfClass(row.id).then((data) => {
-          this.dialogFormVisible = false
-          this.$notify({
-            title: '成功',
-            message: data.success ? '移出成功' : data.msg,
-            type: data.success ? 'success' : 'error',
-            duration: 2000
-          })
-          this.getList()
-        }).catch(() => {
-          this.$notify({
-            title: '失败',
-            message: '移出失败',
-            type: 'error',
-            duration: 2000
-          })
+    giveScore(row) {
+      if (row.createdDate === null) {
+        this.$alert('该同学还没交作业暂不能评分', '提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            return
+          }
         })
-
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消移出'
+      } else {
+        this.$prompt('请输入您的评分（0-100）', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /([1-9]?\d|100)$/,
+          inputErrorMessage: '分数格式不正确'
+        }).then(({value}) => {
+          giveHomeworkScore(row.id, {score: value}).then(() => {
+            this.$notify({
+              title: '成功',
+              message: '评分成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '评分失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '评分已取消'
+          });
         });
-      });
-    },
+      }
+    }
   }
 }
 </script>
