@@ -23,7 +23,7 @@
       <!--</el-table-column>-->
       <!--<el-table-column align="center" label="序号" width="95">-->
         <!--<template slot-scope="scope">-->
-          <!--{{ scope.$index.js + 1 }}-->
+          <!--{{ scope.$index + 1 }}-->
         <!--</template>-->
       <!--</el-table-column>-->
       <el-table-column label="班级名称" width="250" align="center" sortable="custom" prop="name">

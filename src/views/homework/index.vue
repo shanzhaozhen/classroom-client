@@ -141,6 +141,7 @@ export default {
           inputErrorMessage: '分数格式不正确'
         }).then(({value}) => {
           giveHomeworkScore(row.id, {score: value}).then(() => {
+            this.getList()
             this.$notify({
               title: '成功',
               message: '评分成功',

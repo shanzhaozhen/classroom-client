@@ -21,12 +21,6 @@
 <script>
 import vueCanvasNest from 'vue-canvas-nest'
 
-import store from '@/store'
-
-import { login } from '@/api/index.js'
-
-import { setToken } from '@/utils/auth'
-
 export default {
   name: 'Login',
   components: { vueCanvasNest },
@@ -76,30 +70,6 @@ export default {
           }).catch(() => {
             this.loading = false
           })
-          // const result = await login(this.loginForm)
-          //
-          // if (result) {
-          //   this.loading = false;
-          //   if (result.success === true) {
-          //     setToken(result['access-token'])
-          //     this.$store.dispatch('saveToken', result['access-token']);
-          //
-          //     this.$message({
-          //       message: '登陆成功！',
-          //       type: 'success'
-          //     })
-          //
-          //     setTimeout(() => {
-          //       this.$router.push({ path: this.redirect || '/' })
-          //     }, 3000)
-          //
-          //   } else {
-          //     this.$message({
-          //       message: '错误：' + result.status + '，' + result.message,
-          //       type: 'error'
-          //     })
-          //   }
-          // }
 
         } else {
           this.$message({
