@@ -12,7 +12,7 @@ module.exports = {
   //     .set('@', resolve('src'))
   //     .set('style', resolve('src/assets/style'))
   // },
-  // baseUrl:'/tool/',  //根据www.xxx.com/后面的路径写入（比如www.xxx.com/tool）
+  publicPath: process.env.NODE_ENV === 'production' ? '/classroom/' : './'  ,  //根据www.xxx.com/后面的路径写入（比如www.xxx.com/tool）
   devServer: {
     proxy: {
       '/api': {
