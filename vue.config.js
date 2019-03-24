@@ -12,10 +12,11 @@ module.exports = {
   //     .set('@', resolve('src'))
   //     .set('style', resolve('src/assets/style'))
   // },
+  // baseUrl:'/tool/',  //根据www.xxx.com/后面的路径写入（比如www.xxx.com/tool）
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8080/classroom',
+        target: 'http://127.0.0.1:8090/classroom',
         changeOrigin: true,
         ws: true,
         pathRewrite: {
