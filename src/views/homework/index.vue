@@ -19,9 +19,14 @@
       fit
       highlight-current-row
       @sort-change="sortChange">
+      <el-table-column label="学号" align="center" sortable="custom" prop="u.sysUserInfo.number">
+        <template slot-scope="scope">
+            {{ scope.row.number }}
+        </template>
+      </el-table-column>
       <el-table-column label="姓名" align="center" sortable="custom" prop="u.sysUserInfo.fullName">
         <template slot-scope="scope">
-            {{ scope.row.fullName }}
+          {{ scope.row.fullName }}
         </template>
       </el-table-column>
       <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickname">
@@ -32,10 +37,10 @@
       <el-table-column align="center" label="提交时间" sortable="custom" prop="createdDate">
         <template slot-scope="scope">
           <div v-if="scope.row.createdDate !== null">
-            <router-link :to="'/homework/' + scope.row.id" class="link-type">
+            <a class="link-type" @click="viewHomework(scope.row.id)">
               <i class="el-icon-time"/>
               <span>{{ scope.row.createdDate }}</span>
-            </router-link>
+            </a>
           </div>
           <span v-else>未交作业</span>
         </template>
@@ -55,11 +60,27 @@
 
     <Pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.size" @pagination="getList"/>
 
+
+    <el-dialog :title="homeworkDetail.fullName" :visible.sync="homeworkVisible" :v-loading="homeworkLoading">
+      <input v-model="homeworkDetail.id" type="hidden"/>
+      <h3 class="field-label">作业内容</h3>
+      <el-card shadow="never">
+        {{homeworkDetail.content}}
+      </el-card>
+      <h3>附件：</h3>
+      <a class="el-upload-list__item-name" :href="homeworkDetail.fileUrl" target="_blank" v-if="homeworkDetail.fileUrl"><i class="el-icon-document"></i>{{homeworkDetail.fileName}}</a>
+      <span v-else>（无）</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="homeworkVisible = false">关闭</el-button>
+        <el-button type="primary" @click="giveScore(homeworkDetail)">评分</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getHomeworkData, giveHomeworkScore } from '@/api/homework'
+import { getHomeworkData, giveHomeworkScore, getHomeworkDetail } from '@/api/homework'
 
 import Pagination from '@/components/Pagination'
 
@@ -96,7 +117,10 @@ export default {
         type: undefined,
         sort: ''
       },
-      statusOptions: ['published', 'draft', 'deleted']
+      statusOptions: ['published', 'draft', 'deleted'],
+      homeworkVisible: false,
+      homeworkLoading: false,
+      homeworkDetail: {}
     }
   },
   created() {
@@ -126,6 +150,7 @@ export default {
       this.getList()
     },
     giveScore(row) {
+      console.log(row)
       if (row.createdDate === null) {
         this.$alert('该同学还没交作业暂不能评分', '提示', {
           confirmButtonText: '确定',
@@ -163,6 +188,29 @@ export default {
           });
         });
       }
+    },
+    viewHomework (id) {
+      this.homeworkVisible = true
+      this.homeworkLoading = true
+      getHomeworkDetail(id).then((res) => {
+        this.homeworkLoading = false
+        if (res.success === true) {
+          this.homeworkDetail = res.data
+        } else {
+          this.homeworkVisible = false
+          this.$message({
+            type: 'error',
+            message: res.msg
+          });
+        }
+      }).catch(() => {
+        this.homeworkLoading = false
+        this.homeworkVisible = false
+        this.$message({
+          type: 'error',
+          message: '数据获取失败'
+        });
+      })
     }
   }
 }

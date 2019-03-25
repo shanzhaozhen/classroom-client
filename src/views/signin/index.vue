@@ -19,6 +19,11 @@
       fit
       highlight-current-row
       @sort-change="sortChange">
+      <el-table-column label="学号" align="center" sortable="custom" prop="u.sysUserInfo.number">
+        <template slot-scope="scope">
+          {{ scope.row.number }}
+        </template>
+      </el-table-column>
       <el-table-column label="姓名" align="center" sortable="custom" prop="u.sysUserInfo.fullName">
         <template slot-scope="scope">
             {{ scope.row.fullName }}

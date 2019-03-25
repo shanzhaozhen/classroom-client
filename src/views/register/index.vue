@@ -7,6 +7,12 @@
       <el-form-item prop="username">
         <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入用户名" v-model="registerForm.username"></el-input>
       </el-form-item>
+      <el-form-item prop="fullName">
+        <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入真实姓名" v-model="registerForm.fullName"></el-input>
+      </el-form-item>
+      <el-form-item prop="number">
+        <el-input type="number" prefix-icon="cm-icon-user" status-icon placeholder="请输入学号/工号" v-model="registerForm.number"></el-input>
+      </el-form-item>
       <el-form-item prop="password">
         <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入密码" show-password v-model="registerForm.password"></el-input>
       </el-form-item>
@@ -39,6 +45,8 @@ export default {
       loading: false,
       registerForm: {
         username: '',
+        fullName: '',
+        number: '',
         password: '',
         confirm_password: '',
         rememberMe: false
@@ -48,6 +56,14 @@ export default {
           { required: true, message: '用户名不能为空', trigger: 'blur' },
           { min: 5, max: 18, message: '长度在 5 到 18 个字符', trigger: 'blur' },
           { validator: this.checkUsername, trigger: 'blur' }
+        ],
+        fullName: [
+          { required: true, message: '真实姓名不能为空', trigger: 'blur' },
+          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' },
+        ],
+        number: [
+          { required: true, message: '学号不能为空', trigger: 'blur' },
+          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' },
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },

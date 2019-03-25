@@ -16,3 +16,10 @@ export function giveHomeworkScore(homeworkId, query) {
   })
 }
 
+export function getHomeworkDetail(homeworkId) {
+  return request({
+    url: `/api/admin/homework/${homeworkId}`,
+    method: 'get'
+  })
+}
+
