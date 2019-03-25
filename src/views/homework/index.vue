@@ -150,7 +150,6 @@ export default {
       this.getList()
     },
     giveScore(row) {
-      console.log(row)
       if (row.createdDate === null) {
         this.$alert('该同学还没交作业暂不能评分', '提示', {
           confirmButtonText: '确定',
