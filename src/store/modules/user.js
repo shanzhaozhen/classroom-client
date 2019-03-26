@@ -1,4 +1,4 @@
-import { login, getUserInfo, logout } from '@/api/login'
+import { login, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const TOKEN_KEY = 'access-token'
@@ -52,7 +52,7 @@ const user = {
             // } else {
             //   reject('getInfo: roles must be a non-null array !')
             // }
-            commit('SET_NAME', data.nickname)
+            commit('SET_NAME', data.nickName)
             commit('SET_AVATAR', data.avatar)
           } else {
             reject(data)

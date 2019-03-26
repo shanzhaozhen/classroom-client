@@ -29,9 +29,9 @@
           {{ scope.row.fullName }}
         </template>
       </el-table-column>
-      <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickname">
+      <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickName">
         <template slot-scope="scope">
-          <span>{{ scope.row.nickname }}</span>
+          <span>{{ scope.row.nickName }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="提交时间" sortable="custom" prop="createdDate">
@@ -68,7 +68,7 @@
         {{homeworkDetail.content}}
       </el-card>
       <h3>附件：</h3>
-      <a class="el-upload-list__item-name" :href="homeworkDetail.fileUrl" target="_blank" v-if="homeworkDetail.fileUrl"><i class="el-icon-document"></i>{{homeworkDetail.fileName}}</a>
+      <a class="el-upload-list__item-name" v-if="homeworkDetail.tFileInfo" @click="download()"><i class="el-icon-document"></i>{{homeworkDetail.tFileInfo.fileName}}</a>
       <span v-else>（无）</span>
       <div slot="footer" class="dialog-footer">
         <el-button @click="homeworkVisible = false">关闭</el-button>

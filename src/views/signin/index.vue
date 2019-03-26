@@ -29,9 +29,9 @@
             {{ scope.row.fullName }}
         </template>
       </el-table-column>
-      <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickname">
+      <el-table-column label="昵称" align="center" sortable="custom" prop="u.sysUserInfo.nickName">
         <template slot-scope="scope">
-          <span>{{ scope.row.nickname }}</span>
+          <span>{{ scope.row.nickName }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="签到时间" sortable="custom" prop="createdDate">
