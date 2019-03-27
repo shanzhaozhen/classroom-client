@@ -16,7 +16,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://god.ngrok.xiaomiqiu.cn/classroom',
+        target: 'http://127.0.0.1:8090/classroom',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

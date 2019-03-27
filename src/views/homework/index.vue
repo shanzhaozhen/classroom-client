@@ -68,7 +68,7 @@
         {{homeworkDetail.content}}
       </el-card>
       <h3>附件：</h3>
-      <a class="el-upload-list__item-name" v-if="homeworkDetail.tFileInfo" @click="download()"><i class="el-icon-document"></i>{{homeworkDetail.tFileInfo.fileName}}</a>
+      <a class="el-upload-list__item-name" v-if="homeworkDetail.tFileInfo" @click="downloadFile(homeworkDetail.tFileInfo.id, homeworkDetail.tFileInfo.fileName)"><i class="el-icon-document"></i>{{homeworkDetail.tFileInfo.fileName}}</a>
       <span v-else>（无）</span>
       <div slot="footer" class="dialog-footer">
         <el-button @click="homeworkVisible = false">关闭</el-button>
@@ -81,6 +81,7 @@
 
 <script>
 import { getHomeworkData, giveHomeworkScore, getHomeworkDetail } from '@/api/homework'
+import { download } from '@/api/file'
 
 import Pagination from '@/components/Pagination'
 
@@ -209,6 +210,33 @@ export default {
           type: 'error',
           message: '数据获取失败'
         });
+      })
+    },
+    downloadFile (id, fileName) {
+      download(id).then(data => {
+        if (!data) {
+          this.$notify({
+            title: '失败',
+            message: '下载失败',
+            type: 'error',
+            duration: 2000
+          })
+          return
+        }
+        const blob = new Blob([data])
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const lnk = document.createElement('a')
+          lnk.download = fileName
+          lnk.style.display = 'none'
+          lnk.href = URL.createObjectURL(blob)
+          document.body.appendChild(lnk)
+          lnk.click()
+          URL.revokeObjectURL(lnk.href) // 释放URL 对象
+          document.body.removeChild(lnk)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+
       })
     }
   }
