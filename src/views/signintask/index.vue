@@ -37,9 +37,9 @@
           <span>{{ scope.row.outline }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="签到方式" width="110" align="center" sortable="custom" prop="classType">
+      <el-table-column class-name="status-col" label="签到方式" width="155" align="center" sortable="custom" prop="classType">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.signInType }}</el-tag>
+          <el-tag>{{ scope.row.signInType | signInTypeFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="开始时间" width="180" sortable="custom" prop="createdDate">
@@ -117,15 +117,10 @@
           <el-input-number v-model="temp.scope" controls-position="right" :min="0" :max="1000"></el-input-number>
         </el-form-item>
         <el-form-item label="签到方式" prop="signInType">
-          <el-select class="filter-item" v-model="temp.signInType" filterable placeholder="请选择签到方式" style="margin-right: 10px;">
-            <el-option label="现场扫码" :value="0"></el-option>
-            <el-option label="在线扫码" :value="1"></el-option>
-            <el-option label="现场人脸识别" :value="2"></el-option>
-            <el-option label="在线人脸识别" :value="3"></el-option>
-            <el-option label="现场混合" :value="4"></el-option>
-            <el-option label="在线混合" :value="5"></el-option>
-            <el-option label="所有混合" :value="6"></el-option>
-          </el-select>
+          <el-checkbox-group v-model="temp.signInType">
+            <el-checkbox label="1">位置定位</el-checkbox>
+            <el-checkbox label="2">人脸识别</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="发布状态" prop="announce">
           <el-radio-group v-model="temp.announce">
@@ -210,7 +205,7 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
-        signInType: 0,
+        signInType: [],
         address: '',
         longitude: 112.495301,
         latitude: 23.107272,
@@ -230,7 +225,6 @@ export default {
         name: [{ required: true, message: '任务名称是必填项', trigger: 'blur' }],
         tempDate: [{ validator: this.checkTempDate, trigger: 'blur' }],
         classId: [{ required: true, message: '班级是必选项', trigger: 'blur' }],
-        signInType: [{ required: true, message: '起止时间是必选项', trigger: 'blur' }],
         announce: [{ required: true, message: '发布状态是必选项', trigger: 'blur' }]
       }
     }
@@ -340,7 +334,7 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
-        signInType: 0,
+        signInType: [],
         address: '',
         longitude: 112.495301,
         latitude: 23.107272,
@@ -419,6 +413,26 @@ export default {
     },
     handleConfirmLocation() {
       this.mapBoxVisible = false
+    }
+  },
+  // eslint-disable-next-line
+  filters: {
+    signInTypeFilter(value) {
+      if (!value) {
+        return '(无)'
+      }
+      let text = ''
+      for (let i = 0; i < value.length; i++) {
+        if (text) {
+          text += '、'
+        }
+        if (value[i] === 1) {
+          text = text + '位置定位'
+        } else if (value[i] === 2) {
+          text = text + '脸部识别'
+        }
+      }
+      return text
     }
   }
 }
