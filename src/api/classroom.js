@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getClassRoomData(query) {
+export function getClassroomData(query) {
   return request({
     url: '/admin/classroom',
     method: 'get',
@@ -8,7 +8,7 @@ export function getClassRoomData(query) {
   })
 }
 
-export function createClassRoom(data) {
+export function createClassroom(data) {
   return request({
     url: '/admin/classroom',
     method: 'post',
@@ -16,7 +16,7 @@ export function createClassRoom(data) {
   })
 }
 
-export function updateClassRoom(data) {
+export function updateClassroom(data) {
   return request({
     url: '/admin/classroom',
     method: 'put',
@@ -24,14 +24,14 @@ export function updateClassRoom(data) {
   })
 }
 
-export function deleteClassRoom(id) {
+export function deleteClassroom(id) {
   return request({
     url: `/admin/classroom/${id}`,
     method: 'delete'
   })
 }
 
-export function getClassRoomSimpleData() {
+export function getClassroomSimpleData() {
   return request({
     url: '/admin/classroom/simple',
     method: 'get'

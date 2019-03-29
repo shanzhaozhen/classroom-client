@@ -44,7 +44,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'ClassRoom',
+        name: 'Classroom',
         component: () => import('@/views/classroom/index'),
         meta: { title: '班级管理', icon: 'cm-icon-solution' }
       },

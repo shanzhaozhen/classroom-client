@@ -60,7 +60,7 @@ import Pagination from '@/components/Pagination'
 import waves from '@/directive/waves' // Waves directive
 
 export default {
-  name: 'ClassRoom',
+  name: 'Classroom',
   components: { Pagination },
   directives: { waves },
   filters: {

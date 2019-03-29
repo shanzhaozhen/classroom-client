@@ -31,3 +31,10 @@ export function deleteSignInTask(id) {
   })
 }
 
+export function getAttendanceRateBySignInTaskId(signInTaskId) {
+  return request({
+    url: `/admin/signintask/attendance/${signInTaskId}`,
+    method: 'get'
+  })
+}
+

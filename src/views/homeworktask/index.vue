@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getClassRoomSimpleData } from '@/api/classroom'
+import { getClassroomSimpleData } from '@/api/classroom'
 
 import { getHomeworkTaskData, createHomeworkTask, updateHomeworkTask, deleteHomeworkTask } from '@/api/homeworktask'
 
@@ -210,7 +210,7 @@ export default {
   },
   methods: {
     getOptions() {
-      getClassRoomSimpleData().then(data => {
+      getClassroomSimpleData().then(data => {
         this.options = data
       })
     },

@@ -2,9 +2,11 @@
   <div class="app-container">
     <div style="text-align: center">
       <span>{{ this.$route.query.signInTaskName }}</span>
+      <span v-if="attendanceRate">{{'(出勤率：'+ attendanceRate + ')' }}</span>
     </div>
     <div class="filter-container">
       <el-button v-waves class="filter-item" icon="el-icon-back" @click="$router.back(-1)">返回</el-button>
+      <el-button v-waves class="filter-item" icon="el-icon-document" type="primary">导出数据</el-button>
       <div style="float: right;">
         <el-input placeholder="请输入关键字" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" @keyup.enter.native="getList"/>
         <el-button v-waves class="filter-item" style="margin-left: 10px;"  type="primary" icon="el-icon-search" @click="getList">查询</el-button>
@@ -52,13 +54,14 @@
 
 <script>
 import { getSignInData } from '@/api/signin'
+import { getAttendanceRateBySignInTaskId } from '@/api/signintask'
 
 import Pagination from '@/components/Pagination'
 
 import waves from '@/directive/waves' // Waves directive
 
 export default {
-  name: 'ClassRoom',
+  name: 'Classroom',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -88,11 +91,13 @@ export default {
         type: undefined,
         sort: ''
       },
-      statusOptions: ['published', 'draft', 'deleted']
+      statusOptions: ['published', 'draft', 'deleted'],
+      attendanceRate: null
     }
   },
   created() {
     this.getList()
+    this.getAttendanceRate()
   },
   methods: {
     getList() {
@@ -116,6 +121,13 @@ export default {
         this.listQuery.sort = `${prop},desc`
       }
       this.getList()
+    },
+    getAttendanceRate() {
+      if (this.$route.params.id) {
+        getAttendanceRateBySignInTaskId(this.$route.params.id).then((res)=>{
+          this.attendanceRate = res.attendanceRate
+        })
+      }
     }
   }
 }

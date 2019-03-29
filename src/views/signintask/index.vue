@@ -117,7 +117,7 @@
           <el-input-number v-model="temp.scope" controls-position="right" :min="0" :max="1000"></el-input-number>
         </el-form-item>
         <el-form-item label="签到方式" prop="signInType">
-          <el-checkbox-group v-model="temp.signInType">
+          <el-checkbox-group v-model="signInTypeValue">
             <el-checkbox label="1">位置定位</el-checkbox>
             <el-checkbox label="2">人脸识别</el-checkbox>
           </el-checkbox-group>
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { getClassRoomSimpleData } from '@/api/classroom'
+import { getClassroomSimpleData } from '@/api/classroom'
 
 import { getSignInTaskData, createSignInTask, updateSignInTask, deleteSignInTask } from '@/api/signintask'
 
@@ -230,9 +230,17 @@ export default {
     }
   },
   computed: {
-    signInType: {
-      get () {},
-      set () {}
+    signInTypeValue: {
+      get () {
+        return this.temp.signInType.map(value => {
+          return String(value)
+        })
+      },
+      set (value) {
+        this.temp.signInType = value.map(value => {
+          return Number(value)
+        })
+      }
     }
   },
   created() {
@@ -241,7 +249,7 @@ export default {
   },
   methods: {
     getOptions() {
-      getClassRoomSimpleData().then(data => {
+      getClassroomSimpleData().then(data => {
         this.options = data
       })
     },

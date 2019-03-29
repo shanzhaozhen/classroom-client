@@ -104,14 +104,14 @@
 </template>
 
 <script>
-import { getClassRoomData, createClassRoom, updateClassRoom, deleteClassRoom } from '@/api/classroom'
+import { getClassroomData, createClassroom, updateClassroom, deleteClassroom } from '@/api/classroom'
 
 import Pagination from '@/components/Pagination'
 
 import waves from '@/directive/waves' // Waves directive
 
 export default {
-  name: 'ClassRoom',
+  name: 'Classroom',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -167,7 +167,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getClassRoomData(this.listQuery).then(data => {
+      getClassroomData(this.listQuery).then(data => {
         this.list = data.content
         this.total = data.totalElements
         // Just to simulate the time of the request
@@ -187,7 +187,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createClassRoom(this.temp).then(() => {
+          createClassroom(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -218,7 +218,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateClassRoom(this.temp).then(() => {
+          updateClassroom(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -248,7 +248,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       row.announce = status
-      updateClassRoom(row).then(() => {
+      updateClassroom(row).then(() => {
         this.getList()
         this.dialogFormVisible = false
         this.$notify({
@@ -272,7 +272,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteClassRoom(row.id).then((data) => {
+        deleteClassroom(row.id).then((data) => {
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',
