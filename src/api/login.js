@@ -1,13 +1,11 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/api'
-
 /**
  * 登陆请求
  */
 export function login({ username, password, rememberMe }) {
   return request({
-    url: `/api/login`,
+    url: '/login',
     method: 'post',
     data: {
       username,
@@ -19,7 +17,7 @@ export function login({ username, password, rememberMe }) {
 
 export function getUserInfo() {
   return request({
-    url: `${BASE_URL}/admin/user/info`,
+    url: '/admin/user/info',
     method: 'get'
   })
 }

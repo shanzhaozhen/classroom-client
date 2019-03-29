@@ -7,7 +7,7 @@ const TOKEN_HEADER = 'Class-Token'
 
 // 创建axios实例
 const service = axios.create({
-  // baseURL: process.env.BASE_API, // api 的 base_url
+  baseURL: '/api' + process.env.BASE_URL, // api 的 base_url
   timeout: 10000 // 请求超时时间
 })
 

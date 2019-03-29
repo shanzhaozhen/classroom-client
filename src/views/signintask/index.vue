@@ -229,6 +229,12 @@ export default {
       }
     }
   },
+  computed: {
+    signInType: {
+      get () {},
+      set () {}
+    }
+  },
   created() {
     this.getOptions()
     this.getList()
@@ -291,6 +297,7 @@ export default {
       })
     },
     handleUpdate(row) {
+      console.log(row)
       this.temp = Object.assign({}, row) // copy obj
       this.tempDate = [row.startDate, row.endDate];
       this.temp.tempDate = this.tempDate;
