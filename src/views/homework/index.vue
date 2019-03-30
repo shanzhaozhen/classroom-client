@@ -1,10 +1,12 @@
 <template>
   <div class="app-container">
-    <div style="text-align: center">
+    <div style="text-align: center; margin-bottom: 5px">
       <span>{{ this.$route.query.homeworkTaskName }}</span>
+      <span v-if="submitRate">{{'(提交率：'+ submitRate + ')' }}</span>
     </div>
     <div class="filter-container">
       <el-button v-waves class="filter-item" icon="el-icon-back" @click="$router.back(-1)">返回</el-button>
+      <el-button v-waves class="filter-item" icon="el-icon-document" type="primary" @click="exportData">导出数据</el-button>
       <div style="float: right;">
         <el-input placeholder="请输入关键字" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" @keyup.enter.native="getList"/>
         <el-button v-waves class="filter-item" style="margin-left: 10px;"  type="primary" icon="el-icon-search" @click="getList">查询</el-button>
@@ -80,12 +82,15 @@
 </template>
 
 <script>
-import { getHomeworkData, giveHomeworkScore, getHomeworkDetail } from '@/api/homework'
+import { getHomeworkData, giveHomeworkScore, getHomeworkDetail, exportHomeworkDataByHomeworkTaskId } from '@/api/homework'
+import { getSubmitRateByHomeworkTaskId } from '@/api/homework-task'
+
+import { downloadUtil } from '@/utils/downloadUtil'
 import { download } from '@/api/file'
 
 import Pagination from '@/components/Pagination'
 
-import waves from '@/directive/waves' // Waves directive
+import waves from '@/directive/waves'// Waves directive
 
 export default {
   name: 'Homework',
@@ -121,11 +126,13 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       homeworkVisible: false,
       homeworkLoading: false,
-      homeworkDetail: {}
+      homeworkDetail: {},
+      submitRate: null
     }
   },
   created() {
     this.getList()
+    this.getSubmitRate()
   },
   methods: {
     getList() {
@@ -214,29 +221,37 @@ export default {
     },
     downloadFile (id, fileName) {
       download(id).then(data => {
-        if (!data) {
+        if (data) {
+          downloadUtil(data, fileName)
+        } else {
           this.$notify({
             title: '失败',
             message: '下载失败',
             type: 'error',
             duration: 2000
           })
-          return
         }
-        const blob = new Blob([data])
-        if ('download' in document.createElement('a')) { // 非IE下载
-          const lnk = document.createElement('a')
-          lnk.download = fileName
-          lnk.style.display = 'none'
-          lnk.href = URL.createObjectURL(blob)
-          document.body.appendChild(lnk)
-          lnk.click()
-          URL.revokeObjectURL(lnk.href) // 释放URL 对象
-          document.body.removeChild(lnk)
-        } else { // IE10+下载
-          navigator.msSaveBlob(blob, fileName)
+      })
+    },
+    getSubmitRate() {
+      if (this.$route.params.id) {
+        getSubmitRateByHomeworkTaskId(this.$route.params.id).then((res)=>{
+          this.submitRate = res.submitRate
+        })
+      }
+    },
+    exportData() {
+      exportHomeworkDataByHomeworkTaskId(this.$route.params.id).then((data) => {
+        if (data) {
+          downloadUtil(data, this.$route.query.homeworkTaskName + '-作业提交数据.xls')
+        } else {
+          this.$notify({
+            title: '失败',
+            message: '下载失败',
+            type: 'error',
+            duration: 2000
+          })
         }
-
       })
     }
   }

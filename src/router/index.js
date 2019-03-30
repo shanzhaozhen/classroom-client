@@ -58,32 +58,32 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/signintask',
+    path: '/sign-task',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'SignInTask',
-        component: () => import('@/views/signintask/index'),
+        name: 'SignTask',
+        component: () => import('@/views/sign-task/index'),
         meta: { title: '考勤管理', icon: 'cm-icon-solution' }
       },
       {
         path: ':id(\\d+)',
         name: 'SignIn',
-        component: () => import('@/views/signin/index'),
+        component: () => import('@/views/sign/index'),
         meta: { title: '签到任务', noCache: true },
         hidden: true
       }
     ]
   },
   {
-    path: '/homewordktask',
+    path: '/homework-task',
     component: Layout,
     children: [
       {
         path: 'index',
         name: 'HomeworkTask',
-        component: () => import('@/views/homeworktask/index'),
+        component: () => import('@/views/homework-task/index'),
         meta: { title: '作业管理', icon: 'cm-icon-solution' }
       },
       {

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">发起作业任务</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">发起考勤</el-button>
       <div style="float: right;">
         <el-select class="filter-item" v-model="listQuery.classId" filterable placeholder="请选择班级" style="margin-right: 10px;">
           <el-option label="所有班级" value=""></el-option>
@@ -25,16 +25,21 @@
       fit
       highlight-current-row
       @sort-change="sortChange">
-      <el-table-column label="作业名称" width="250" align="center" sortable="custom" prop="name">
+      <el-table-column label="签到任务名称" width="250" align="center" sortable="custom" prop="name">
         <template slot-scope="scope">
-          <router-link :to="{path: '/homewordktask/' + scope.row.id, query:{homeworkTaskName:scope.row.name}}" class="link-type">
+          <router-link :to="{path: '/sign-task/' + scope.row.id, query:{signTaskName:scope.row.name}}" class="link-type">
             <span>{{ scope.row.name }}</span>
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="作业概述" sortable="custom" prop="outline">
+      <el-table-column label="考勤任务名概述" sortable="custom" prop="outline">
         <template slot-scope="scope">
           <span>{{ scope.row.outline }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="签到方式" width="155" align="center" sortable="custom" prop="classType">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.signType | signTypeFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="开始时间" width="180" sortable="custom" prop="createdDate">
@@ -76,10 +81,10 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
         <input v-model="temp.id" type="hidden"/>
-        <el-form-item label="作业名称" prop="name">
+        <el-form-item label="任务名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入签到任务名称"></el-input>
         </el-form-item>
-        <el-form-item label="作业概述">
+        <el-form-item label="任务概述">
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="temp.outline" type="textarea" placeholder="请输入任务概述"></el-input>
         </el-form-item>
         <el-form-item label="选择班级" prop="classId">
@@ -100,6 +105,22 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="签到位置" prop="scope">
+          <el-input v-model="temp.address" placeholder="请选取签到位置" :disabled="true">
+            <el-button slot="append" icon="el-icon-location-outline" @click="handleGetLocation">选择位置</el-button>
+          </el-input>
+          <input v-model="temp.longitude" type="hidden"/>
+          <input v-model="temp.latitude" type="hidden"/>
+        </el-form-item>
+        <el-form-item label="范围（m）" prop="scope">
+          <el-input-number v-model="temp.scope" controls-position="right" :min="0" :max="1000"></el-input-number>
+        </el-form-item>
+        <el-form-item label="签到方式" prop="signType">
+          <el-checkbox-group v-model="signTypeValue">
+            <el-checkbox label="1">位置定位</el-checkbox>
+            <el-checkbox label="2">人脸识别</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="发布状态" prop="announce">
           <el-radio-group v-model="temp.announce">
@@ -129,7 +150,7 @@
 <script>
 import { getClassroomSimpleData } from '@/api/classroom'
 
-import { getHomeworkTaskData, createHomeworkTask, updateHomeworkTask, deleteHomeworkTask } from '@/api/homeworktask'
+import { getSignTaskData, createSignTask, updateSignTask, deleteSignTask } from '@/api/sign-task'
 
 import Pagination from '@/components/Pagination'
 
@@ -140,7 +161,7 @@ import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 
 export default {
-  name: 'HomeworkTask',
+  name: 'SignTask',
   components: {
     Pagination,
     MapBox
@@ -184,6 +205,11 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
+        signType: [],
+        address: '',
+        longitude: 112.495301,
+        latitude: 23.107272,
+        scope: 0,
         announce: undefined
       },
       tempDate: undefined,
@@ -199,8 +225,21 @@ export default {
         name: [{ required: true, message: '任务名称是必填项', trigger: 'blur' }],
         tempDate: [{ validator: this.checkTempDate, trigger: 'blur' }],
         classId: [{ required: true, message: '班级是必选项', trigger: 'blur' }],
-        signInType: [{ required: true, message: '起止时间是必选项', trigger: 'blur' }],
         announce: [{ required: true, message: '发布状态是必选项', trigger: 'blur' }]
+      }
+    }
+  },
+  computed: {
+    signTypeValue: {
+      get () {
+        return this.temp.signType.map(value => {
+          return String(value)
+        })
+      },
+      set (value) {
+        this.temp.signType = value.map(detail => {
+          return Number(detail)
+        })
       }
     }
   },
@@ -216,7 +255,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      getHomeworkTaskData(this.listQuery).then(data => {
+      getSignTaskData(this.listQuery).then(data => {
         this.list = data.content
         this.total = data.totalElements
         // Just to simulate the time of the request
@@ -245,7 +284,7 @@ export default {
         if (valid) {
           this.temp.startDate = parseTime(this.tempDate[0])
           this.temp.endDate =  parseTime(this.tempDate[1])
-          createHomeworkTask(this.temp).then(() => {
+          createSignTask(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -266,6 +305,7 @@ export default {
       })
     },
     handleUpdate(row) {
+      console.log(row)
       this.temp = Object.assign({}, row) // copy obj
       this.tempDate = [row.startDate, row.endDate];
       this.temp.tempDate = this.tempDate;
@@ -280,7 +320,7 @@ export default {
         if (valid) {
           this.temp.startDate = parseTime(this.tempDate[0])
           this.temp.endDate =  parseTime(this.tempDate[1])
-          updateHomeworkTask(this.temp).then(() => {
+          updateSignTask(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
@@ -309,13 +349,18 @@ export default {
         date: [],
         startDate: new Date(),
         endDate: new Date(),
+        signType: [],
+        address: '',
+        longitude: 112.495301,
+        latitude: 23.107272,
+        scope: 0,
         announce: false
       }
       this.tempDate = []
     },
     handleModifyStatus(row, status) {
       row.announce = status
-      updateHomeworkTask(row).then(() => {
+      updateSignTask(row).then(() => {
         this.getList()
         this.dialogFormVisible = false
         this.$notify({
@@ -339,7 +384,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteHomeworkTask(row.id).then((data) => {
+        deleteSignTask(row.id).then((data) => {
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',
@@ -383,6 +428,26 @@ export default {
     },
     handleConfirmLocation() {
       this.mapBoxVisible = false
+    }
+  },
+  // eslint-disable-next-line
+  filters: {
+    signTypeFilter(value) {
+      if (!value) {
+        return '(无)'
+      }
+      let text = ''
+      for (let i = 0; i < value.length; i++) {
+        if (text) {
+          text += '、'
+        }
+        if (value[i] === 1) {
+          text = text + '位置定位'
+        } else if (value[i] === 2) {
+          text = text + '脸部识别'
+        }
+      }
+      return text
     }
   }
 }
