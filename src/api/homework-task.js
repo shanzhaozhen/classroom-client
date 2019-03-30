@@ -31,9 +31,9 @@ export function deleteHomeworkTask(id) {
   })
 }
 
-export function getSubmitRateByHomeworkTaskId(homeworkTaskId) {
+export function getCommitRateByHomeworkTaskId(homeworkTaskId) {
   return request({
-    url: `/admin/homework-task/submitrate/${homeworkTaskId}`,
+    url: `/admin/homework-task/${homeworkTaskId}/commit`,
     method: 'get'
   })
 }

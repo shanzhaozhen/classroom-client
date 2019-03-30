@@ -2,7 +2,7 @@
   <div class="app-container">
     <div style="text-align: center; margin-bottom: 5px">
       <span>{{ this.$route.query.homeworkTaskName }}</span>
-      <span v-if="submitRate">{{'(提交率：'+ submitRate + ')' }}</span>
+      <span v-if="commitRate">{{'(提交率：'+ commitRate + ')' }}</span>
     </div>
     <div class="filter-container">
       <el-button v-waves class="filter-item" icon="el-icon-back" @click="$router.back(-1)">返回</el-button>
@@ -127,7 +127,7 @@ export default {
       homeworkVisible: false,
       homeworkLoading: false,
       homeworkDetail: {},
-      submitRate: null
+      commitRate: null
     }
   },
   created() {
@@ -236,7 +236,7 @@ export default {
     getSubmitRate() {
       if (this.$route.params.id) {
         getSubmitRateByHomeworkTaskId(this.$route.params.id).then((res)=>{
-          this.submitRate = res.submitRate
+          this.commitRate = res.commitRate
         })
       }
     },
