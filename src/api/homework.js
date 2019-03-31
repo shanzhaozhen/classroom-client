@@ -25,9 +25,18 @@ export function getHomeworkDetail(homeworkId) {
 
 export function exportHomeworkDataByHomeworkTaskId(homeworkTaskId) {
   return request({
-    url: `/admin/homework-task/${homeworkTaskId}/export`,
+    url: `/admin/homework-task/${homeworkTaskId}/homework/export`,
     method: 'get',
     responseType: 'blob'
   })
 }
+
+export function getNoScoreHomeworkData(query) {
+  return request({
+    url: `/admin/homework/no-score`,
+    method: 'get',
+    params: query
+  })
+}
+
 

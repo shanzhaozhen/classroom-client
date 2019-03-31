@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">发起作业任务</el-button>
       <div style="float: right;">
-        <el-select class="filter-item" v-model="listQuery.classId" filterable placeholder="请选择班级" style="margin-right: 10px;">
+        <el-select class="filter-item" v-model="listQuery.classroomId" filterable placeholder="请选择班级" style="margin-right: 10px;">
           <el-option label="所有班级" value=""></el-option>
           <el-option
             v-for="item in options"
@@ -27,7 +27,7 @@
       @sort-change="sortChange">
       <el-table-column label="作业名称" width="250" align="center" sortable="custom" prop="name">
         <template slot-scope="scope">
-          <router-link :to="{path: '/homewordktask/' + scope.row.id, query:{homeworkTaskName:scope.row.name}}" class="link-type">
+          <router-link :to="{path: '/homework-task/' + scope.row.id, query:{homeworkTaskName:scope.row.name}}" class="link-type">
             <span>{{ scope.row.name }}</span>
           </router-link>
         </template>
@@ -82,8 +82,8 @@
         <el-form-item label="作业概述">
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="temp.outline" type="textarea" placeholder="请输入任务概述"></el-input>
         </el-form-item>
-        <el-form-item label="选择班级" prop="classId">
-          <el-select class="filter-item" v-model="temp.classId" filterable placeholder="请选择班级" style="margin-right: 10px;">
+        <el-form-item label="选择班级" prop="classroomId">
+          <el-select class="filter-item" v-model="temp.classroomId" filterable placeholder="请选择班级" style="margin-right: 10px;">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -170,7 +170,7 @@ export default {
         page: 0,
         size: 20,
         importance: undefined,
-        classId: '',
+        classroomId: '',
         keyword: '',
         type: undefined,
         sort: ''
@@ -178,7 +178,7 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
         id: undefined,
-        classId: undefined,
+        classroomId: undefined,
         name: '',
         outline: '',
         date: [],
@@ -198,7 +198,7 @@ export default {
       rules: {
         name: [{ required: true, message: '任务名称是必填项', trigger: 'blur' }],
         tempDate: [{ validator: this.checkTempDate, trigger: 'blur' }],
-        classId: [{ required: true, message: '班级是必选项', trigger: 'blur' }],
+        classroomId: [{ required: true, message: '班级是必选项', trigger: 'blur' }],
         signType: [{ required: true, message: '起止时间是必选项', trigger: 'blur' }],
         announce: [{ required: true, message: '发布状态是必选项', trigger: 'blur' }]
       }
@@ -303,7 +303,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        classId: undefined,
+        classroomId: undefined,
         name: '',
         outline: '',
         date: [],

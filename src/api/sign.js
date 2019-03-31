@@ -10,7 +10,7 @@ export function getSignInData(signTaskId, query) {
 
 export function exportSignInDataBySignTaskId(signTaskId) {
   return request({
-    url: `/admin/sign-task/${signTaskId}/export`,
+    url: `/admin/sign-task/${signTaskId}/sign/export`,
     method: 'get',
     responseType: 'blob'
   })

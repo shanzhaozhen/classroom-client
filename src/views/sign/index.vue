@@ -55,7 +55,7 @@
 <script>
 import { getSignInData, exportSignInDataBySignTaskId } from '@/api/sign'
 import { getAttendanceRateBySignTaskId } from '@/api/sign-task'
-import { downloadUtil } from '@/utils/downloadUtil'
+import { downloadAction } from '@/utils/download'
 
 import Pagination from '@/components/Pagination'
 
@@ -133,7 +133,7 @@ export default {
     exportData() {
       exportSignInDataBySignTaskId(this.$route.params.id).then((data) => {
         if (data) {
-          downloadUtil(data, this.$route.query.signTaskName + '-出勤数据.xls')
+          downloadAction(data, this.$route.query.signTaskName + '-出勤数据.xls')
         } else {
           this.$notify({
             title: '失败',

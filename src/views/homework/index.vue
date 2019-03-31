@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column align="center" label="提交时间" sortable="custom" prop="createdDate">
         <template slot-scope="scope">
-          <div v-if="scope.row.createdDate !== null">
+          <div v-if="scope.row.content">
             <a class="link-type" @click="viewHomework(scope.row.id)">
               <i class="el-icon-time"/>
               <span>{{ scope.row.createdDate }}</span>
@@ -83,9 +83,9 @@
 
 <script>
 import { getHomeworkData, giveHomeworkScore, getHomeworkDetail, exportHomeworkDataByHomeworkTaskId } from '@/api/homework'
-import { getSubmitRateByHomeworkTaskId } from '@/api/homework-task'
+import { getCommitRateByHomeworkTaskId } from '@/api/homework-task'
 
-import { downloadUtil } from '@/utils/downloadUtil'
+import { downloadAction } from '@/utils/download'
 import { download } from '@/api/file'
 
 import Pagination from '@/components/Pagination'
@@ -158,7 +158,7 @@ export default {
       this.getList()
     },
     giveScore(row) {
-      if (row.createdDate === null) {
+      if (row.content === null) {
         this.$alert('该同学还没交作业暂不能评分', '提示', {
           confirmButtonText: '确定',
           callback: () => {
@@ -222,7 +222,7 @@ export default {
     downloadFile (id, fileName) {
       download(id).then(data => {
         if (data) {
-          downloadUtil(data, fileName)
+          downloadAction(data, fileName)
         } else {
           this.$notify({
             title: '失败',
@@ -235,7 +235,7 @@ export default {
     },
     getSubmitRate() {
       if (this.$route.params.id) {
-        getSubmitRateByHomeworkTaskId(this.$route.params.id).then((res)=>{
+        getCommitRateByHomeworkTaskId(this.$route.params.id).then((res)=>{
           this.commitRate = res.commitRate
         })
       }
@@ -243,7 +243,7 @@ export default {
     exportData() {
       exportHomeworkDataByHomeworkTaskId(this.$route.params.id).then((data) => {
         if (data) {
-          downloadUtil(data, this.$route.query.homeworkTaskName + '-作业提交数据.xls')
+          downloadAction(data, this.$route.query.homeworkTaskName + '-作业提交数据.xls')
         } else {
           this.$notify({
             title: '失败',

@@ -1,18 +1,21 @@
 import request from '@/utils/request'
 
-export function getStudentData(classId, query) {
+export function getStudentData(classroomId, query) {
   return request({
-    url: `/admin/students/${classId}`,
+    url: `/admin/classroom/${classroomId}/student`,
     method: 'get',
     params: query
   })
 }
 
-export function joinClass(classId, studentId) {
+export function joinClass(classroomId, studentId) {
   return request({
-    url: `/admin/student/${classId}`,
+    url: `/admin/student`,
     method: 'post',
-    data: studentId
+    data: {
+      classroomId,
+      studentId
+    }
   })
 }
 
@@ -22,3 +25,12 @@ export function moveOutOfClass(id) {
     method: 'delete'
   })
 }
+
+export function exportStudentDataByClassroomId(classroomId) {
+  return request({
+    url: `/admin/classroom/${classroomId}/student/export`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+

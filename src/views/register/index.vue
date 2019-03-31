@@ -5,19 +5,19 @@
       <h3 class="title">用户注册</h3>
       <router-link class="to-link" to="/login">已有账号？</router-link>
       <el-form-item prop="username">
-        <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入用户名" v-model="registerForm.username"></el-input>
+        <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入用户名" name="username" v-model="registerForm.username"></el-input>
       </el-form-item>
       <el-form-item prop="fullName">
-        <el-input prefix-icon="cm-icon-idcard" status-icon placeholder="请输入真实姓名" v-model="registerForm.fullName"></el-input>
+        <el-input prefix-icon="cm-icon-idcard" status-icon placeholder="请输入真实姓名" name="fullName" v-model="registerForm.fullName"></el-input>
       </el-form-item>
       <el-form-item prop="number">
-        <el-input type="number" prefix-icon="cm-icon-contacts" status-icon placeholder="请输入学号/工号" v-model="registerForm.number"></el-input>
+        <el-input type="number" prefix-icon="cm-icon-contacts" status-icon placeholder="请输入学号/工号" name="number" v-model="registerForm.number"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入密码" show-password v-model="registerForm.password"></el-input>
+        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入密码" name="password" show-password v-model="registerForm.password"></el-input>
       </el-form-item>
       <el-form-item prop="confirm_password">
-        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入确认密码" show-password v-model="registerForm.confirm_password"></el-input>
+        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入确认密码" name="confirm_password" show-password v-model="registerForm.confirm_password"></el-input>
       </el-form-item>
       <el-form-item class="form-btn">
         <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>

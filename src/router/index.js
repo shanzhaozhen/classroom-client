@@ -46,7 +46,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Classroom',
         component: () => import('@/views/classroom/index'),
-        meta: { title: '班级管理', icon: 'cm-icon-solution' }
+        meta: { title: '班级管理', icon: 'cm-icon-flag' }
       },
       {
         path: ':id(\\d+)',
@@ -65,7 +65,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'SignTask',
         component: () => import('@/views/sign-task/index'),
-        meta: { title: '考勤管理', icon: 'cm-icon-solution' }
+        meta: { title: '考勤管理', icon: 'cm-icon-notification' }
       },
       {
         path: ':id(\\d+)',
@@ -84,7 +84,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'HomeworkTask',
         component: () => import('@/views/homework-task/index'),
-        meta: { title: '作业管理', icon: 'cm-icon-solution' }
+        meta: { title: '作业管理', icon: 'cm-icon-detail' }
       },
       {
         path: ':id(\\d+)',

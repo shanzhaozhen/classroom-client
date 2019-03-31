@@ -5,10 +5,10 @@
       <h3 class="title">用户登陆</h3>
       <router-link class="to-link" to="/register">没有账号？</router-link>
       <el-form-item prop="username">
-        <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入用户名" v-model="loginForm.username"></el-input>
+        <el-input prefix-icon="cm-icon-user" status-icon placeholder="请输入用户名" name="username" v-model="loginForm.username"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入密码" show-password v-model="loginForm.password"></el-input>
+        <el-input prefix-icon="cm-icon-lock" status-icon placeholder="请输入密码" name="password" show-password v-model="loginForm.password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-checkbox v-model="loginForm.rememberMe" class="remember">记住密码</el-checkbox>

@@ -1,4 +1,4 @@
-export function downloadUtil(data, fileName) {
+export function downloadAction(data, fileName) {
 
   if (data) {
     if (!fileName) {
