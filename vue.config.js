@@ -3,6 +3,11 @@
 //   return path.join(__dirname, dir)
 // }
 
+// 在vue-config.js 中加入
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const productionGzipExtensions = ['js', 'css'];
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
 
   // // webpack 配置进行更细粒度的修改  https://cli.vuejs.org/zh/config/#chainwebpack
@@ -26,6 +31,17 @@ module.exports = {
       }
     }
   },
+  configureWebpack: config => {
+    if (isProduction) {
+      config.plugins.push(new CompressionWebpackPlugin({
+        algorithm: 'gzip',
+        test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+        threshold: 10240,
+        minRatio: 0.8
+      })
+      )
+    }
+  }
   // chainWebpack: config => {
   //   const svgRule = config.module.rule('svg')
   //   //必须清除已有的所有loader,否则会附加在该规则现有的loader之后
