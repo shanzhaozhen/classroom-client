@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { getNoScoreHomeworkData, giveHomeworkScore, getHomeworkDetail, exportHomeworkDataByHomeworkTaskId } from '@/api/homework'
+import { getNoScoreHomeworkData, giveHomeworkScore, getHomeworkDetail } from '@/api/homework'
 
 import Pagination from '@/components/Pagination'
 
